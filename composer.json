@@ -1,0 +1,23 @@
+{
+  "name": "chizu/di",
+  "description": "A package that provides dependency injection functionality",
+  "type": "library",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "chop1k",
+      "email": "fakeshopendesu@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "php-ds/php-ds": ">=v1.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Chizu\\DI\\": "src/"
+    }
+  }
+}
