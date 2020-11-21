@@ -2,44 +2,42 @@
 
 namespace Chizu\DI;
 
-use Ds\Map;
-
 class Container
 {
-    protected Map $dependencies;
+    protected Dependencies $dependencies;
 
     /**
-     * @return Map
+     * @return Dependencies
      */
-    public function getDependencies(): Map
+    public function getDependencies(): Dependencies
     {
         return $this->dependencies;
     }
 
-    public function __construct(array $values = [])
+    protected Modules $modules;
+
+    /**
+     * @return Modules
+     */
+    public function getModules(): Modules
     {
-        $this->dependencies = new Map($values);
+        return $this->modules;
     }
 
-    public function addDependency(string $name, string $class): void
+    protected Singletons $singletons;
+
+    /**
+     * @return Singletons
+     */
+    public function getSingletons(): Singletons
     {
-        $this->dependencies->put($name, $class);
+        return $this->singletons;
     }
 
-    public function getDependency(string $name): object
+    public function __construct(array $dependencies = [], array $singletons = [], array $modules = [])
     {
-        $class = $this->dependencies->get($name);
-
-        return new $class();
-    }
-
-    public function addSingleton(string $name, object $instance): void
-    {
-        $this->dependencies->put($name, $instance);
-    }
-
-    public function getSingleton(string $name): object
-    {
-        return $this->dependencies->get($name);
+        $this->dependencies = new Dependencies($dependencies);
+        $this->singletons = new Singletons($singletons);
+        $this->modules = new Modules($modules);
     }
 }
