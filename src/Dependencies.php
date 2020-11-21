@@ -13,6 +13,11 @@ class Dependencies
         $this->dependencies->put($name, $class);
     }
 
+    public function has(string $name): bool
+    {
+        return $this->dependencies->hasKey($name);
+    }
+
     public function get(string $name): object
     {
         $class = $this->dependencies->get($name);

@@ -13,6 +13,11 @@ class Modules
         $this->modules->put($name, $class);
     }
 
+    public function has(string $name): bool
+    {
+        return $this->modules->hasKey($name);
+    }
+
     public function get(string $name): object
     {
         $class = $this->modules->get($name);

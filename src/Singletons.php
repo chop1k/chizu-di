@@ -13,6 +13,11 @@ class Singletons
         $this->singletons->put($name, $class);
     }
 
+    public function has(string $name): bool
+    {
+        return $this->singletons->hasKey($name);
+    }
+
     public function get(string $name): object
     {
         $class = $this->singletons->get($name);
