@@ -8,7 +8,7 @@ class Modules
 {
     protected Map $modules;
 
-    public function add(string $name, string $class): void
+    public function add(string $name, $class): void
     {
         $this->modules->put($name, $class);
     }
