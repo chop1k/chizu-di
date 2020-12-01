@@ -14,16 +14,6 @@ class Container
         return $this->dependencies;
     }
 
-    protected Modules $modules;
-
-    /**
-     * @return Modules
-     */
-    public function getModules(): Modules
-    {
-        return $this->modules;
-    }
-
     protected Singletons $singletons;
 
     /**
@@ -34,10 +24,9 @@ class Container
         return $this->singletons;
     }
 
-    public function __construct(array $dependencies = [], array $singletons = [], array $modules = [])
+    public function __construct(array $dependencies = [], array $singletons = [])
     {
         $this->dependencies = new Dependencies($dependencies);
         $this->singletons = new Singletons($singletons);
-        $this->modules = new Modules($modules);
     }
 }
