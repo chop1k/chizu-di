@@ -2,31 +2,29 @@
 
 namespace Chizu\DI;
 
+use Ds\Map;
+
 class Container
 {
-    protected Dependencies $dependencies;
+    protected Map $dependencies;
 
-    /**
-     * @return Dependencies
-     */
-    public function getDependencies(): Dependencies
+    public function has(string $class): bool
     {
-        return $this->dependencies;
+        return $this->dependencies->hasKey($class);
     }
 
-    protected Singletons $singletons;
-
-    /**
-     * @return Singletons
-     */
-    public function getSingletons(): Singletons
+    public function get(string $class)
     {
-        return $this->singletons;
+        return $this->dependencies->get($class);
     }
 
-    public function __construct(array $dependencies = [], array $singletons = [])
+    public function add(string $class, $dependency): void
     {
-        $this->dependencies = new Dependencies($dependencies);
-        $this->singletons = new Singletons($singletons);
+        $this->dependencies->put($class, $dependency);
+    }
+
+    public function __construct($values = [])
+    {
+        $this->dependencies = new Map($values);
     }
 }
