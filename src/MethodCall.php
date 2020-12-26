@@ -2,11 +2,23 @@
 
 namespace Chizu\DI;
 
+/**
+ * Class MethodCall represents class which stores data for dependency method call
+ *
+ * @package Chizu\DI
+ */
 class MethodCall
 {
+    /**
+     * Contains method name
+     *
+     * @var string $name
+     */
     protected string $name;
 
     /**
+     * Returns method name
+     *
      * @return string
      */
     public function getName(): string
@@ -15,6 +27,8 @@ class MethodCall
     }
 
     /**
+     * Sets method name
+     *
      * @param string $name
      */
     public function setName(string $name): void
@@ -22,9 +36,16 @@ class MethodCall
         $this->name = $name;
     }
 
+    /**
+     * Contains method arguments
+     *
+     * @var array $arguments
+     */
     protected array $arguments;
 
     /**
+     * Returns array of arguments
+     *
      * @return array
      */
     public function getArguments(): array
@@ -33,6 +54,8 @@ class MethodCall
     }
 
     /**
+     * Sets array arguments
+     *
      * @param array $arguments
      */
     public function setArguments(array $arguments): void
@@ -40,6 +63,12 @@ class MethodCall
         $this->arguments = $arguments;
     }
 
+    /**
+     * MethodCall constructor.
+     *
+     * @param string $name
+     * @param array $arguments
+     */
     public function __construct(string $name = "", array $arguments = [])
     {
         $this->name = $name;
