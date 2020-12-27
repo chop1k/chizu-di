@@ -3,21 +3,21 @@
 namespace Chizu\DI;
 
 /**
- * Class Dependency represents structure which stores data needed for dependency injection
+ * Class Dependency represents structure which stores data needed for dependency injection.
  *
  * @package Chizu\DI
  */
 class Dependency
 {
     /**
-     * Contains array of arguments needed for dependency constructor
+     * Contains array of arguments needed for dependency constructor.
      *
      * @var array $arguments
      */
     protected array $arguments;
 
     /**
-     * Returns array of arguments needed for dependency constructor
+     * Returns array of arguments needed for dependency constructor.
      *
      * @return array
      */
@@ -27,7 +27,7 @@ class Dependency
     }
 
     /**
-     * Sets array of arguments needed for dependency constructor
+     * Sets array of arguments needed for dependency constructor.
      *
      * @param array $arguments
      */
@@ -37,13 +37,13 @@ class Dependency
     }
 
     /**
-     * Adds argument for dependency constructor
+     * Adds argument for dependency constructor.
      *
      * @param string $name
-     * Argument name
+     * Argument name.
      *
      * @param $value
-     * Argument value
+     * Argument value.
      */
     public function addArgument(string $name, $value): void
     {
@@ -51,14 +51,14 @@ class Dependency
     }
 
     /**
-     * Contains class of dependency
+     * Contains class of dependency.
      *
      * @var string $class
      */
     protected string $class;
 
     /**
-     * Returns class of dependency
+     * Returns class of dependency.
      *
      * @return string
      */
@@ -68,7 +68,7 @@ class Dependency
     }
 
     /**
-     * Sets class of dependency
+     * Sets class of dependency.
      *
      * @param string $class
      */
@@ -78,14 +78,14 @@ class Dependency
     }
 
     /**
-     * Contains array of method calls
+     * Contains array of method calls.
      *
      * @var array $calls
      */
     protected array $calls;
 
     /**
-     * Returns array of method calls
+     * Returns array of method calls.
      *
      * @return array
      */
@@ -95,7 +95,7 @@ class Dependency
     }
 
     /**
-     * Sets array of method calls
+     * Sets array of method calls.
      *
      * @param array $calls
      */
@@ -105,7 +105,7 @@ class Dependency
     }
 
     /**
-     * Adds method call
+     * Adds method call.
      *
      * @param MethodCall $call
      */
@@ -115,14 +115,14 @@ class Dependency
     }
 
     /**
-     * Contains dependency instance if dependency is singleton, null otherwise
+     * Contains dependency instance if dependency is singleton, null otherwise.
      *
      * @var object|null $instance
      */
     protected ?object $instance;
 
     /**
-     * Returns dependency instance if dependency is singleton, null otherwise
+     * Returns dependency instance if dependency is singleton, null otherwise.
      *
      * @return object|null
      */
@@ -132,7 +132,7 @@ class Dependency
     }
 
     /**
-     * Sets dependency instance if dependency is singleton
+     * Sets dependency instance if dependency is singleton.
      *
      * @param object|null $instance
      */
@@ -148,7 +148,7 @@ class Dependency
      * @param array $arguments
      * @param array $calls
      */
-    public function __construct(string $class, array $arguments = [], array $calls = [])
+    public function __construct($class, array $arguments = [], array $calls = [])
     {
         $this->class = is_string($class) ? $class : false;
         $this->arguments = $arguments;

@@ -9,21 +9,21 @@ use ReflectionException;
 use ReflectionParameter;
 
 /**
- * Class Container provides dependency injection functionality
+ * Class Container provides dependency injection functionality.
  *
  * @package Chizu\DI
  */
 class Container
 {
     /**
-     * Map with dependencies
+     * Map with dependencies.
      *
      * @var Map $dependencies
      */
     protected Map $dependencies;
 
     /**
-     * Returns true if container contains a class
+     * Returns true if container contains a class.
      *
      * @param string $class
      *
@@ -35,7 +35,7 @@ class Container
     }
 
     /**
-     * Returns dependency
+     * Returns dependency.
      *
      * @param string $class
      *
@@ -47,7 +47,7 @@ class Container
     }
 
     /**
-     * Adds dependency to the container
+     * Adds dependency to the container.
      *
      * @param string $class
      *
@@ -69,21 +69,19 @@ class Container
     }
 
     /**
-     * Creates dependency instance by dependencies in the container
+     * Creates dependency instance by dependencies in the container.
      *
-     * @param string $name
-     * Dependency name
+     * @param Dependency $dependency
+     * Dependency which will be created.
      *
      * @return object
-     * Dependency instance
+     * Returns dependency instance.
      *
-     * @throws ReflectionException
      * @throws DIException
+     * @throws ReflectionException
      */
-    public function create(string $name): object
+    public function create(Dependency $dependency): object
     {
-        $dependency = $this->get($name);
-
         $instance = $dependency->getInstance();
 
         if (!is_null($instance))
@@ -114,16 +112,33 @@ class Container
     }
 
     /**
-     * Iterate given parameters
+     * Creates dependency instance by dependencies in the container.
+     *
+     * @param string $name
+     * Dependency name.
+     *
+     * @return object
+     * Dependency instance.
+     *
+     * @throws ReflectionException
+     * @throws DIException
+     */
+    public function createByKey(string $name): object
+    {
+        return $this->create($this->get($name));
+    }
+
+    /**
+     * Iterate given parameters.
      *
      * @param array $args
-     * Dependency arguments
+     * Dependency arguments.
      *
      * @param array $params
-     * Dependency constructor parameters
+     * Dependency constructor parameters.
      *
      * @return array
-     * Returns array of constructor arguments
+     * Returns array of constructor arguments.
      *
      * @throws DIException
      * @throws ReflectionException
@@ -141,19 +156,19 @@ class Container
     }
 
     /**
-     * Handles given parameter
+     * Handles given parameter.
      *
      * @param array $params
-     * Dependency arguments
+     * Dependency arguments.
      *
      * @param ReflectionParameter $parameter
-     * Parameter
+     * Parameter.
      *
      * @return mixed
-     * Returns value which will be passed to dependency constructor
+     * Returns value which will be passed to dependency constructor.
      *
      * @throws DIException
-     * Throws if no value found
+     * Throws if no value found.
      *
      * @throws ReflectionException
      */
@@ -175,7 +190,7 @@ class Container
             }
             else
             {
-                return $this->create($fullClass);
+                return $this->createByKey($fullClass);
             }
         }
         elseif (isset($params[$name]))
@@ -187,13 +202,13 @@ class Container
     }
 
     /**
-     * Executes dependency method
+     * Executes dependency method.
      *
      * @param object $instance
-     * Dependency instance
+     * Dependency instance.
      *
      * @param array $calls
-     * Dependency calls
+     * Dependency calls.
      */
     private function executeMethods(object $instance, array $calls): void
     {

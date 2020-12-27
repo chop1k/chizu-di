@@ -3,21 +3,21 @@
 namespace Chizu\DI;
 
 /**
- * Class MethodCall represents class which stores data for dependency method call
+ * Class MethodCall represents class which stores data for dependency method call.
  *
  * @package Chizu\DI
  */
 class MethodCall
 {
     /**
-     * Contains method name
+     * Contains method name.
      *
      * @var string $name
      */
     protected string $name;
 
     /**
-     * Returns method name
+     * Returns method name.
      *
      * @return string
      */
@@ -27,7 +27,7 @@ class MethodCall
     }
 
     /**
-     * Sets method name
+     * Sets method name.
      *
      * @param string $name
      */
@@ -37,14 +37,14 @@ class MethodCall
     }
 
     /**
-     * Contains method arguments
+     * Contains method arguments.
      *
      * @var array $arguments
      */
     protected array $arguments;
 
     /**
-     * Returns array of arguments
+     * Returns array of arguments.
      *
      * @return array
      */
@@ -54,7 +54,7 @@ class MethodCall
     }
 
     /**
-     * Sets array arguments
+     * Sets array arguments.
      *
      * @param array $arguments
      */

@@ -26,12 +26,12 @@ class ContainerTest extends TestCase
         $this->container->add(UseTestDependency::class, new Dependency(UseTestDependency::class, ['text' => 'text']));
     }
 
-    public function testCreate(): void
+    public function testCreateByKey(): void
     {
         /**
          * @var UseTestDependency $instance
          */
-        $instance = $this->container->create(UseTestDependency::class);
+        $instance = $this->container->createByKey(UseTestDependency::class);
 
         self::assertInstanceOf(UseTestDependency::class, $instance);
         self::assertEquals('text', $instance->getDep()->getText());
