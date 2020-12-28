@@ -2,23 +2,22 @@
 
 namespace Tests\TestDependencies;
 
+use Tests\ContainerTest;
+
+/**
+ * Class TestDependency is a simple dependency which returns test word.
+ *
+ * @package Tests\TestDependencies
+ */
 class TestDependency
 {
-    protected string $text;
-
     /**
+     * Returns test word.
+     *
      * @return string
      */
-    public function getText(): string
+    public function test(): string
     {
-        return $this->text;
-    }
-
-    /**
-     * @param string $text
-     */
-    public function setText(string $text): void
-    {
-        $this->text = $text;
+        return ContainerTest::testWord;
     }
 }

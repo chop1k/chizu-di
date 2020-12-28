@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMissingReturnTypeInspection */
 
 namespace Chizu\DI;
 
@@ -6,6 +6,7 @@ use Chizu\DI\Exception\DIException;
 use Ds\Map;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 use ReflectionParameter;
 
 /**
@@ -78,6 +79,7 @@ class Container
      * Returns dependency instance.
      *
      * @throws DIException
+     *
      * @throws ReflectionException
      */
     public function create(Dependency $dependency): object
@@ -89,7 +91,34 @@ class Container
             return $instance;
         }
 
-        $reflectionClass = new ReflectionClass($dependency->getClass());
+        return $this->createBy(
+            $dependency->getClass(),
+            $dependency->getArguments(),
+            $dependency->getCalls()
+        );
+    }
+
+    /**
+     * Private function which takes all arguments needed for instance creation.
+     *
+     * @param string $class
+     * Class instance of which will be created.
+     *
+     * @param array $arguments
+     * Array of local arguments.
+     *
+     * @param array $calls
+     * Array of methods which will be executed after creation.
+     *
+     * @return object
+     *
+     * @throws DIException
+     *
+     * @throws ReflectionException
+     */
+    private function createBy(string $class, array $arguments, array $calls): object
+    {
+        $reflectionClass = new ReflectionClass($class);
 
         $constructor = $reflectionClass->getConstructor();
 
@@ -100,13 +129,13 @@ class Container
         {
             $instance = $reflectionClass->newInstanceArgs(
                 $this->iterateParams(
-                    $dependency->getArguments(),
+                    $arguments,
                     $constructor->getParameters()
                 )
             );
         }
 
-        $this->executeMethods($instance, $dependency->getCalls());
+        $this->executeMethods($instance, $calls);
 
         return $instance;
     }
@@ -121,11 +150,135 @@ class Container
      * Dependency instance.
      *
      * @throws ReflectionException
+     *
      * @throws DIException
      */
     public function createByKey(string $name): object
     {
         return $this->create($this->get($name));
+    }
+
+    /**
+     * Shortcut for creating object instance by dependencies in the container.
+     *
+     * @param string $class
+     *
+     * @return object
+     *
+     * @throws DIException
+     *
+     * @throws ReflectionException
+     */
+    public function createByClass(string $class): object
+    {
+        return $this->createBy($class, [], []);
+    }
+
+    /**
+     * Shortcut for executing the method of the given dependency instance.
+     *
+     * @param Dependency $dependency
+     *
+     * @param string $method
+     * Method to execute.
+     *
+     * @return mixed
+     *
+     * @throws DIException
+     *
+     * @throws ReflectionException
+     */
+    public function executeDependencyMethod(Dependency $dependency, string $method)
+    {
+        return $this->executeMethodBy($this->create($dependency), $dependency->getArguments(), $method);
+    }
+
+    /**
+     * Shortcut for executing method after creating new instance of given class.
+     *
+     * @param string $class
+     * Class to create.
+     *
+     * @param string $method
+     * Method to execute.
+     *
+     * @return mixed
+     *
+     * @throws DIException
+     *
+     * @throws ReflectionException
+     */
+    public function executeClassMethod(string $class, string $method)
+    {
+        return $this->executeMethod($this->createByClass($class), $method);
+    }
+
+    /**
+     * Executes method using dependency injection.
+     *
+     * @param object $instance
+     * 
+     * @param string $method
+     *
+     * @return mixed
+     *
+     * @throws DIException
+     * 
+     * @throws ReflectionException
+     */
+    public function executeMethod(object $instance, string $method)
+    {
+        return $this->executeMethodBy($instance, [], $method);
+    }
+
+    /**
+     * Private function which takes all arguments needed for method execution.
+     * 
+     * @param object $instance
+     * Class instance.
+     * 
+     * @param array $arguments
+     * Dependency arguments.
+     * 
+     * @param string $method
+     * Method to execute.
+     * 
+     * @return mixed
+     * 
+     * @throws DIException
+     * 
+     * @throws ReflectionException
+     */
+    private function executeMethodBy(object $instance, array $arguments, string $method)
+    {
+        if ($method === '__constructor')
+        {
+            throw new DIException(
+                'It is forbidden to use a constructor as a method for execution. Use create methods instead.'
+            );
+        }
+
+        $reflectionMethod = new ReflectionMethod($instance, $method);
+
+        if (!$reflectionMethod->isPublic())
+        {
+            $reflectionMethod->setAccessible(true);
+        }
+
+        $result = $reflectionMethod->invokeArgs(
+            $instance,
+            $this->iterateParams(
+                $arguments,
+                $reflectionMethod->getParameters()
+            )
+        );
+
+        if ($reflectionMethod->isPublic())
+        {
+            $reflectionMethod->setAccessible(true);
+        }
+
+        return $result;
     }
 
     /**
@@ -141,6 +294,7 @@ class Container
      * Returns array of constructor arguments.
      *
      * @throws DIException
+     *
      * @throws ReflectionException
      */
     private function iterateParams(array $args, array $params): array
