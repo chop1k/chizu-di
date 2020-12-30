@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\TestDependencies;
+namespace Chizu\DI\Tests\TestDependencies;
 
-use Tests\ContainerTest;
+use Chizu\DI\Tests\ContainerTest;
 
 /**
  * Class TestDependency is a simple dependency which returns test word.

@@ -52,11 +52,30 @@ class Container
      *
      * @param string $class
      *
-     * @param Dependency $dependency
+     * @param mixed $dependency
+     *
+     * @throws DIException
      */
-    public function add(string $class, Dependency $dependency): void
+    public function add(string $class, $dependency = null): void
     {
+        if (!($dependency instanceof Dependency))
+        {
+            $dependency = new Dependency(is_null($dependency) ? $class : $dependency);
+        }
+
         $this->dependencies->put($class, $dependency);
+    }
+
+    /**
+     * Removes dependency from the container.
+     *
+     * @param string $class
+     *
+     * @return Dependency
+     */
+    public function remove(string $class): Dependency
+    {
+        return $this->dependencies->remove($class);
     }
 
     /**
@@ -116,7 +135,7 @@ class Container
      *
      * @throws ReflectionException
      */
-    private function createBy(string $class, array $arguments, array $calls): object
+    protected function createBy(string $class, array $arguments, array $calls): object
     {
         $reflectionClass = new ReflectionClass($class);
 
@@ -135,7 +154,13 @@ class Container
             );
         }
 
-        $this->executeMethods($instance, $calls);
+        /**
+         * @var MethodCall $call
+         */
+        foreach ($calls as $call)
+        {
+            $this->executeMethodBy($instance, $call->getArguments(), $call->getName());
+        }
 
         return $instance;
     }
@@ -163,15 +188,19 @@ class Container
      *
      * @param string $class
      *
+     * @param array $arguments
+     *
+     * @param array $calls
+     *
      * @return object
      *
      * @throws DIException
      *
      * @throws ReflectionException
      */
-    public function createByClass(string $class): object
+    public function createByClass(string $class, array $arguments = [], array $calls = []): object
     {
-        return $this->createBy($class, [], []);
+        return $this->createBy($class, $arguments, $calls);
     }
 
     /**
@@ -202,33 +231,39 @@ class Container
      * @param string $method
      * Method to execute.
      *
+     * @param array $arguments
+     *
+     * @param array $calls
+     *
      * @return mixed
      *
      * @throws DIException
      *
      * @throws ReflectionException
      */
-    public function executeClassMethod(string $class, string $method)
+    public function executeClassMethod(string $class, string $method, array $arguments = [], array $calls = [])
     {
-        return $this->executeMethod($this->createByClass($class), $method);
+        return $this->executeMethod($this->createByClass($class, $arguments, $calls), $method);
     }
 
     /**
      * Executes method using dependency injection.
      *
      * @param object $instance
-     * 
+     *
      * @param string $method
+     *
+     * @param array $arguments
      *
      * @return mixed
      *
      * @throws DIException
-     * 
+     *
      * @throws ReflectionException
      */
-    public function executeMethod(object $instance, string $method)
+    public function executeMethod(object $instance, string $method, array $arguments = [])
     {
-        return $this->executeMethodBy($instance, [], $method);
+        return $this->executeMethodBy($instance, $arguments, $method);
     }
 
     /**
@@ -249,7 +284,7 @@ class Container
      * 
      * @throws ReflectionException
      */
-    private function executeMethodBy(object $instance, array $arguments, string $method)
+    protected function executeMethodBy(object $instance, array $arguments, string $method)
     {
         if ($method === '__constructor')
         {
@@ -297,7 +332,7 @@ class Container
      *
      * @throws ReflectionException
      */
-    private function iterateParams(array $args, array $params): array
+    protected function iterateParams(array $args, array $params): array
     {
         $arguments = [];
 
@@ -326,54 +361,26 @@ class Container
      *
      * @throws ReflectionException
      */
-    private function handleParam(array $params, ReflectionParameter $parameter)
+    protected function handleParam(array $params, ReflectionParameter $parameter)
     {
         $class = $parameter->getClass();
         $name = $parameter->getName();
+
+        if (isset($params[$name]))
+        {
+            return $params[$name];
+        }
 
         if (!is_null($class))
         {
             $fullClass = $class->getName();
 
-            if (!$this->has($fullClass))
-            {
-                if (isset($params[$name]))
-                {
-                    return $params[$name];
-                }
-            }
-            else
+            if ($this->has($fullClass))
             {
                 return $this->createByKey($fullClass);
             }
         }
-        elseif (isset($params[$name]))
-        {
-            return $params[$name];
-        }
 
         throw new DIException(sprintf('Cannot find value for argument %s', $name));
-    }
-
-    /**
-     * Executes dependency method.
-     *
-     * @param object $instance
-     * Dependency instance.
-     *
-     * @param array $calls
-     * Dependency calls.
-     */
-    private function executeMethods(object $instance, array $calls): void
-    {
-        /**
-         * @var MethodCall $call
-         */
-        foreach ($calls as $call)
-        {
-            $name = $call->getName();
-
-            $instance->$name(...$call->getArguments());
-        }
     }
 }

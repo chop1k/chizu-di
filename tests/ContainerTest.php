@@ -1,16 +1,16 @@
 <?php
 
-namespace Tests;
+namespace Chizu\DI\Tests;
 
 use Chizu\DI\Container;
 use Chizu\DI\Dependency;
 use Chizu\DI\Exception\DIException;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
-use Tests\TestDependencies\CreateTestDependency;
-use Tests\TestDependencies\ExecuteDependencyMethodTestDependency;
-use Tests\TestDependencies\ExecuteMethodTestDependency;
-use Tests\TestDependencies\TestDependency;
+use Chizu\DI\Tests\TestDependencies\CreateTestDependency;
+use Chizu\DI\Tests\TestDependencies\ExecuteDependencyMethodTestDependency;
+use Chizu\DI\Tests\TestDependencies\ExecuteMethodTestDependency;
+use Chizu\DI\Tests\TestDependencies\TestDependency;
 
 /**
  * Class ContainerTest tests container class methods.
@@ -45,6 +45,8 @@ class ContainerTest extends TestCase
 
     /**
      * Defines dependencies in the container.
+     *
+     * @throws DIException
      */
     protected function setUp(): void
     {
@@ -175,4 +177,6 @@ class ContainerTest extends TestCase
             )
         );
     }
+
+    // TODO: do more tests
 }

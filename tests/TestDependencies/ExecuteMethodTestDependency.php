@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\TestDependencies;
+namespace Chizu\DI\Tests\TestDependencies;
 
 /**
  * Class ExecuteMethodTestDependency contain methods for executeMethod tests.

@@ -2,6 +2,8 @@
 
 namespace Chizu\DI;
 
+use Chizu\DI\Exception\DIException;
+
 /**
  * Class Dependency represents structure which stores data needed for dependency injection.
  *
@@ -147,9 +149,16 @@ class Dependency
      * @param string|object|null $class
      * @param array $arguments
      * @param array $calls
+     *
+     * @throws DIException
      */
     public function __construct($class, array $arguments = [], array $calls = [])
     {
+        if ((!is_string($class) || !class_exists($class)) && !is_object($class))
+        {
+            throw new DIException('Class must be class string or object.');
+        }
+
         $this->class = is_string($class) ? $class : false;
         $this->arguments = $arguments;
         $this->calls = $calls;
